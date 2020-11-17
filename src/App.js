@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+import {firestore} from './firebase';
+import React, {Component} from 'react';
+import Posts from "./components/Posts";
+import {collectIdsAndDocs} from "./utilities";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class Application extends Component {
+  state = {
+    posts: [],
+  };
+
+  unsubscribe = null;
+
+  componentDidMount = async () => {
+    this.unsubscribe = firestore
+      .collection('posts')
+      .onSnapshot(snapshot => {
+        const posts = snapshot.docs.map(collectIdsAndDocs);
+        this.setState({posts})
+      })
+  }
+
+  componentWillUnmount = () => {
+    this.unsubscribe();
+  }
+
+  render() {
+    const {posts} = this.state;
+
+    return (
+      <main className="Application">
+        <h1>Think Piece</h1>
+        <Posts
+          posts={posts}
+        />
+      </main>
+    );
+  }
 }
 
-export default App;
+export default Application;

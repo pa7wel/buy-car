@@ -1,41 +1,31 @@
 import './App.scss';
 import {firestore} from './firebase';
-import React, {Component} from 'react';
+import React, {useState, useEffect} from 'react';
 import Posts from "./components/Posts";
 import {collectIdsAndDocs} from "./utilities";
 
-class Application extends Component {
-  state = {
-    posts: [],
-  };
+const App = () => {
+  const [posts, setPosts] = useState([]);
 
-  unsubscribe = null;
-
-  componentDidMount = async () => {
-    this.unsubscribe = firestore
+  useEffect(() => {
+    const unsubscribe = firestore
       .collection('posts')
       .onSnapshot(snapshot => {
         const posts = snapshot.docs.map(collectIdsAndDocs);
-        this.setState({posts})
+        setPosts(posts)
       })
-  }
 
-  componentWillUnmount = () => {
-    this.unsubscribe();
-  }
+    return () => unsubscribe()
+  }, [])
 
-  render() {
-    const {posts} = this.state;
-
-    return (
-      <main className="Application">
-        <h1>Think Piece</h1>
-        <Posts
-          posts={posts}
-        />
-      </main>
-    );
-  }
+  return (
+    <main className="Application">
+      <h1>Think Piece</h1>
+      <Posts
+        posts={posts}
+      />
+    </main>
+  );
 }
 
-export default Application;
+export default App;

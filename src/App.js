@@ -1,4 +1,5 @@
 import './App.scss';
+import 'semantic-ui-css/semantic.min.css';
 import {firestore} from './firebase';
 import React, {useState, useEffect} from 'react';
 import Posts from "./components/Posts";

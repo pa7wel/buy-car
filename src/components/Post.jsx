@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button, Icon } from "semantic-ui-react";
 
 import moment from 'moment';
 import {firestore} from "../firebase";
@@ -33,10 +34,12 @@ const Post = ({title, content, user, createdAt, stars, comments, id}) => {
           <p>{moment(createdAt.toDate()).calendar()}</p>
         </div>
         <div>
-          <button className="star" onClick={star}>Star</button>
-          <button className="delete" onClick={remove}>
-            Delete
-          </button>
+          <Button color='green' onClick={star}>
+            <Icon name='heart' color="red" />
+          </Button>
+          <Button  color="red" onClick={remove}>
+            <Icon name='remove' />
+          </Button>
         </div>
       </div>
     </article>
